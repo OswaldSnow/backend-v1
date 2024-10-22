@@ -1,0 +1,31 @@
+server:
+  port: 8999
+
+spring:
+  datasource:
+    druid:
+      url: jdbc:mysql://localhost:3306/backend_v1?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8
+      username: root
+      password: root
+  web:
+    resources:
+      chain:
+        cache: true
+  thymeleaf:
+    cache: false
+    prefix: classpath:/templates/web/
+
+mybatis-plus:
+  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    map-underscore-to-camel-case: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    backend.v1: info

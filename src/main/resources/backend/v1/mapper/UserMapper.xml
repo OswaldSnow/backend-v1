@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="backend.v1.mapper.UserMapper">
+
+    <select id="customGetUserList" resultType="backend.v1.model.User">
+        select * from t_user
+    </select>
+
+    <select id="customGetRoleList"
+            parameterType="java.lang.Integer"
+            resultType="backend.v1.model.Role">
+        select tr.* from t_user tu
+            join t_user_role tur
+                on tur.user_id = tu.id
+            join t_role tr
+                on tr.id = tur.role_id
+            where tu.id = #{id}
+    </select>
+
+    <select id="customGetPermissionList"
+            parameterType="java.lang.Integer"
+            resultType="backend.v1.model.Permission">
+        select tp.* from t_user tu
+             join t_user_role tur
+                 on tu.id = tur.user_id
+             join t_role_permission trp
+                 on trp.role_id = tur.role_id
+             join t_permission tp
+                 on tp.id = trp.permission_id
+        where tu.id = #{id}
+    </select>
+
+</mapper>
