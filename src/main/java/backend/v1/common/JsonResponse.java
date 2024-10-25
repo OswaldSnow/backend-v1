@@ -17,7 +17,7 @@ public class JsonResponse<T> {
     private PaginationInfo paginationInfo;  // 分页信息
 
     public static <T> JsonResponse<T> success(T data) {
-        return new JsonResponse<>("success", "请求成功", data, 200,null);
+        return new JsonResponse<>("success", "请求成功", data, 2000,null);
     }
 
     public static JsonResponse<Void> error(String message, int code) {
@@ -25,12 +25,12 @@ public class JsonResponse<T> {
     }
 
     public static JsonResponse<Void> warning(String message) {
-        return new JsonResponse<>("warning", message, null, 300,null);
+        return new JsonResponse<>("warning", message, null, 3000,null);
     }
 
     // 新增方法：处理集合数据的响应
     public static <T> JsonResponse<List<T>> successList(List<T> data, PaginationInfo paginationInfo) {
-        return new JsonResponse<>("success", "请求成功", data, 200,paginationInfo);
+        return new JsonResponse<>("success", "请求成功", data, 2000,paginationInfo);
     }
 
 }

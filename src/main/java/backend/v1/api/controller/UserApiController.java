@@ -25,7 +25,6 @@ public class UserApiController {
 
     @GetMapping("/list")
     public JsonResponse<List<User>> getUserList(){
-        log.info("/api/user/list is visited");
         return userService.getAllUsers();
     }
 

@@ -16,12 +16,7 @@ public class StartApplication {
 
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(StartApplication.class);
-//        app.setAddCommandLineProperties(false);
         app.run(StartApplication.class, args);
     }
 
-    @GetMapping("/")
-    public JsonResponse<Object> home(){
-        return JsonResponse.success("Hello World");
-    }
 }

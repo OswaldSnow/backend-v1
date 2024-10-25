@@ -6,12 +6,13 @@ import backend.v1.model.User;
 import com.github.jeffreyning.mybatisplus.base.MppBaseMapper;
 
 import java.util.List;
+import java.util.Set;
 
 public interface UserMapper extends MppBaseMapper<User> {
 
     List<User> customGetUserList();
 
-    List<Role> customGetRoleList(Integer id);
+    Set<Role> customGetRoleList(Integer id);
 
-    List<Permission> customGetPermissionList(Integer id);
+    Set<Permission> customGetPermissionList(Integer id);
 }

@@ -3,8 +3,48 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="../../static/js/jquery.min.js" th:src="@{/js/jquery.min.js}"></script>
 </head>
 <body>
-<h2>Hi,this is login.html</h2>
+    <h2>Hi,this is login.html</h2>
+
+    <div>
+        <label for="login_account">login account</label>
+        <input type="text" name="login_account" id="login_account">
+
+        <br>
+
+        <label for="password">password</label>
+        <input type="password" name="password" id="password">
+
+        <br>
+
+        <button id="login">login</button>
+    </div>
+
 </body>
+<script type="text/javascript">
+    $("#login").on("click", function () {
+        // alert("ok ok is time to login")
+        $.ajax({
+            url: "/web/login",
+            type: "POST",
+            dataType: "json",
+            data: {loginAccount: $("#login_account").val(), password: $("#password").val()},
+            success: function (data) {
+                if (data.code === 2000) {
+                    console.log(data);
+                    window.location.href = '/web/index'
+                }else{
+                    console.log(data)
+                    alert(data.message)
+                }
+            },
+            error: function (err) {
+                console.log(err);
+                alert(err.responseJSON.message)
+            }
+        })
+    })
+</script>
 </html>

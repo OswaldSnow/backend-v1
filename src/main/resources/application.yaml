@@ -15,6 +15,9 @@ spring:
     cache: false
     prefix: classpath:/templates/web/
 
+#  main:
+#    banner-mode: off
+
 mybatis-plus:
   configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl

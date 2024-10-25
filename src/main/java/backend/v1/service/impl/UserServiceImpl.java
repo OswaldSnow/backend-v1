@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service("userService")
 public class UserServiceImpl extends MppServiceImpl<UserMapper,User> implements UserService {
@@ -56,12 +57,12 @@ public class UserServiceImpl extends MppServiceImpl<UserMapper,User> implements 
     }
 
     @Override
-    public List<Role> customGetRoleList(Integer id) {
+    public Set<Role> customGetRoleList(Integer id) {
         return this.baseMapper.customGetRoleList(id);
     }
 
     @Override
-    public List<Permission> customGetPermissionList(Integer id) {
+    public Set<Permission> customGetPermissionList(Integer id) {
         return this.baseMapper.customGetPermissionList(id);
     }
 
