@@ -46,6 +46,8 @@ public class CustomShiroConfigurer {
         chainMap.put("/img/**", "anon");
         chainMap.put("/web/login", "anon");
 
+        chainMap.put("/api/**", "anon");
+
         chainMap.put("/","customShiroFilter");
 
         chainMap.put("/logout", "logout");

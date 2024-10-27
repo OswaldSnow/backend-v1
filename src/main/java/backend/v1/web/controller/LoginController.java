@@ -1,7 +1,6 @@
 package backend.v1.web.controller;
 
-import backend.v1.common.JsonResponse;
-import backend.v1.configuration.exceptionHandle.CustomException;
+import backend.v1.common.AjaxResultJson;
 import backend.v1.model.User;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.*;
@@ -26,14 +25,14 @@ public class LoginController {
 
     @PostMapping(value = "/login")
     @ResponseBody
-    public JsonResponse<User> login(HttpServletRequest request, User user) {
+    public AjaxResultJson login(HttpServletRequest request, User user) {
 //        if( user.getLoginAccount().equals("zhangsan") ){
-//            throw new CustomException("ajax异常测试",000);
+//            throw new CustomException("ajax异常测试");
 //        }
         UsernamePasswordToken token = new UsernamePasswordToken(user.getLoginAccount(), user.getPassword());
         Subject currentUser = SecurityUtils.getSubject();
         currentUser.login(token);
-        return JsonResponse.success(user);
+        return AjaxResultJson.success(user);
     }
 
 }

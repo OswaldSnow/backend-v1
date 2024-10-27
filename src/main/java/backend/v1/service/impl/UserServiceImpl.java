@@ -1,6 +1,6 @@
 package backend.v1.service.impl;
 
-import backend.v1.common.JsonResponse;
+import backend.v1.common.AjaxResultJson;
 import backend.v1.common.PaginationInfo;
 import backend.v1.mapper.RolePermissionMapper;
 import backend.v1.mapper.UserMapper;
@@ -37,7 +37,7 @@ public class UserServiceImpl extends MppServiceImpl<UserMapper,User> implements 
     }
 
     @Override
-    public JsonResponse<List<User>> getAllUsers() {
+    public AjaxResultJson getAllUsers() {
         Page<User> userPage = new Page<>(1, 2);
         IPage<User> userIPage = this.baseMapper.selectPage(userPage, null);
 
@@ -48,7 +48,7 @@ public class UserServiceImpl extends MppServiceImpl<UserMapper,User> implements 
                 userIPage.getSize()
         );
 
-        return JsonResponse.successList(userIPage.getRecords(),pagination);
+        return AjaxResultJson.success(userIPage.getRecords(),pagination);
     }
 
     @Override

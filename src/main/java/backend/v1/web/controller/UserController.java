@@ -1,11 +1,10 @@
 package backend.v1.web.controller;
 
-import backend.v1.common.JsonResponse;
+import backend.v1.common.AjaxResultJson;
 import backend.v1.model.*;
 import backend.v1.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
-import org.apache.shiro.authz.annotation.RequiresRoles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,9 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Controller
 @RequestMapping("/web/user")
@@ -55,9 +52,9 @@ public class UserController {
     @PostMapping("/add")
     @ResponseBody
     @RequiresPermissions("user:add")
-    public JsonResponse<User> UserAdd(User user) {
+    public AjaxResultJson UserAdd(User user) {
 
-        return JsonResponse.success(user);
+        return AjaxResultJson.success(user);
     }
 
     @GetMapping("/detail")

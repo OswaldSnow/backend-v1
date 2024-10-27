@@ -1,19 +1,15 @@
 package backend.v1.web.controller;
 
+import backend.v1.common.AjaxResultJson;
 import backend.v1.configuration.exceptionHandle.CustomException;
 import backend.v1.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresAuthentication;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/web")
@@ -37,7 +33,15 @@ public class IndexController {
 
     @RequestMapping("/makeException")
     public void makeException() {
-        throw new CustomException("测试自定义错误",5001);
+        throw new CustomException("测试自定义错误");
     }
+
+    @RequestMapping("/testAjaxResult")
+    @ResponseBody
+    public AjaxResultJson testAjaxResult(){
+
+        return AjaxResultJson.success();
+    }
+
 
 }
