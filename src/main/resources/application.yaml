@@ -14,7 +14,7 @@ spring:
       add-mappings: false
   thymeleaf:
     cache: false
-    prefix: classpath:/templates/web/
+    prefix: classpath:/templates/app/
   mvc:
     throw-exception-if-no-handler-found: true
 

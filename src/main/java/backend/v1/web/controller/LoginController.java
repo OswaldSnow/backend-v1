@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@RequestMapping("/web")
+@RequestMapping("/app")
 public class LoginController {
 
     @GetMapping("/login")

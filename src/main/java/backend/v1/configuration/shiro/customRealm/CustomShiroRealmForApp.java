@@ -1,4 +1,4 @@
-package backend.v1.configuration.shiro;
+package backend.v1.configuration.shiro.customRealm;
 
 import backend.v1.model.Permission;
 import backend.v1.model.Role;
@@ -12,14 +12,13 @@ import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
 @Component
-public class CustomShiroRealm extends AuthorizingRealm {
+public class CustomShiroRealmForApp extends AuthorizingRealm {
 
     private UserService userService;
 
@@ -61,6 +60,7 @@ public class CustomShiroRealm extends AuthorizingRealm {
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken token) throws AuthenticationException {
         UsernamePasswordToken upToken = (UsernamePasswordToken) token;
+//        upToken.setRememberMe(true);
         String loginAccount = (String)upToken.getPrincipal();
         String password = new String(upToken.getPassword());
 

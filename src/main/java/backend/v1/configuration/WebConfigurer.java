@@ -23,7 +23,7 @@ public class WebConfigurer implements WebMvcConfigurer {
     // 设置静态资源
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**")
+        registry.addResourceHandler("/static/**","/favicon.ico")
                 .addResourceLocations("classpath:/static/");
     }
 }

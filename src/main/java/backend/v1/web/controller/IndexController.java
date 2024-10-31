@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
-@RequestMapping("/web")
+@RequestMapping("/app")
 @Slf4j
 public class IndexController {
 
@@ -22,13 +22,14 @@ public class IndexController {
     @RequiresPermissions("user:list")
     public String index(ModelMap map){
         User currentUser = (User) SecurityUtils.getSubject().getSession().getAttribute("currentUser");
+//        SecurityUtils.getSubject().getPrincipals().forEach(System.out::println);
         map.put("currentUser", currentUser);
         return PageIndex;
     }
 
     @RequestMapping("/")
     public String rootPath(){
-        return "redirect:/web/index";
+        return "redirect:/app/index";
     }
 
     @RequestMapping("/makeException")

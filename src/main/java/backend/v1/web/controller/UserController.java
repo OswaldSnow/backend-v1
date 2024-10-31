@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.util.List;
 
 @Controller
-@RequestMapping("/web/user")
+@RequestMapping("/app/user")
 @Slf4j
 public class UserController {
 

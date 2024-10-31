@@ -26,14 +26,14 @@
 <script type="text/javascript">
     $("#login").on("click", function () {
         $.ajax({
-            url: "/web/login",
+            url: "/app/login",
             type: "POST",
             dataType: "json",
             data: {loginAccount: $("#login_account").val(), password: $("#password").val()},
             success: function (data) {
                 if (data.code === 2000) {
                     console.log(data);
-                    window.location.href = '/web/index'
+                    window.location.href = '/app/index'
                 }else{
                     console.log(data)
                     alert(data.message)

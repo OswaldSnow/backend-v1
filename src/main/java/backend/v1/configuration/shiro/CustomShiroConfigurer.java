@@ -1,66 +1,82 @@
 package backend.v1.configuration.shiro;
 
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
+import backend.v1.configuration.shiro.customRealm.CustomShiroRealmForApi;
+import backend.v1.configuration.shiro.customRealm.CustomShiroRealmForApp;
+import backend.v1.configuration.shiro.customRealm.PathMatchingRealmAuthenticator;
+import backend.v1.configuration.shiro.customShiroFilter.ApiAuthenticationFilter;
+import backend.v1.configuration.shiro.customShiroFilter.CoverFormAuthenticationFilterForApp;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.shiro.authc.pam.FirstSuccessfulStrategy;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
-import org.apache.shiro.spring.web.config.DefaultShiroFilterChainDefinition;
-import org.apache.shiro.spring.web.config.ShiroFilterChainDefinition;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.mgt.WebSecurityManager;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import javax.servlet.Filter;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @Configuration
+@Slf4j
 public class CustomShiroConfigurer {
 
     @Bean
-    public DefaultWebSecurityManager defaultWebSecurityManager(CustomShiroRealm customShiroRealm) {
+    public DefaultWebSecurityManager defaultWebSecurityManager(CustomShiroRealmForApp customShiroRealmForApp, CustomShiroRealmForApi customShiroRealmForApi) {
+        // 创建安全管理器
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        securityManager.setRealm(customShiroRealm);
+
+        // 创建自定义的 ModularRealmAuthenticator
+        PathMatchingRealmAuthenticator authenticator = new PathMatchingRealmAuthenticator();
+
+        // 配置路径与 Realm 的映射关系
+        Map<String, Collection<Realm>> pathRealms = new HashMap<>();
+        pathRealms.put("/app/**", Collections.singletonList(customShiroRealmForApp));
+        pathRealms.put("/api/**", Collections.singletonList(customShiroRealmForApi));
+        authenticator.setPathRealms(pathRealms);
+
+        // 设置认证策略（可选） 当前策略：一个 Realm 认证成功即可
+        authenticator.setAuthenticationStrategy(new FirstSuccessfulStrategy());
+
+        // 设置 Authenticator
+        securityManager.setAuthenticator(authenticator);
+
+        // 设置所有可用的 Realm
+        List<Realm> realms = Arrays.asList(customShiroRealmForApp, customShiroRealmForApi);
+        securityManager.setRealms(realms);
+
         return securityManager;
     }
 
     @Bean
-    public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager,CustomShiroFilter customShiroFilter) {
+    public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager) {
+
         ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterFactoryBean();
         filterFactoryBean.setSecurityManager(defaultWebSecurityManager);
 
-        Map<String, Filter> filters = new LinkedHashMap<>();
-        filters.put("customShiroFilter", customShiroFilter);
-        filterFactoryBean.setFilters(filters);
-
-        // Define filter chain maps
         Map<String,String> chainMap = new LinkedHashMap<>();
-        chainMap.put("/static/**", "anon");
-        chainMap.put("/css/**", "anon");
-        chainMap.put("/js/**", "anon");
-        chainMap.put("/img/**", "anon");
-        chainMap.put("/web/login", "anon");
-
-        chainMap.put("/api/**", "anon");
-
-        chainMap.put("/","customShiroFilter");
-
         chainMap.put("/logout", "logout");
 
-        chainMap.put("/**", "authc");
+        chainMap.put("/favicon.ico","anon");
+        chainMap.put("/static/**", "anon");
+        chainMap.put("/app/login", "anon");
+        chainMap.put("/api/token", "anon");
 
-        // Define filter chain
+        chainMap.put("/app/**", "auth");
+        chainMap.put("/api/**", "apiAuth");
+
+        chainMap.put("/**", "auth");
+
+        log.info("=== Shiro Filter Chains ===");
+        chainMap.forEach((k, v) -> log.info("Path: {}, Filter: {}", k, v));
+
         filterFactoryBean.setFilterChainDefinitionMap(chainMap);
 
-        // Redirect to login page if not authenticated
-        filterFactoryBean.setLoginUrl("/web/login");
-//        filterFactoryBean.setSuccessUrl("/web/index");
-//        filterFactoryBean.setUnauthorizedUrl("/web/unauthorized");
+        Map<String, Filter> filters = new LinkedHashMap<>();
+        filters.put("auth", new CoverFormAuthenticationFilterForApp());
+        filters.put("apiAuth", new ApiAuthenticationFilter());
+        filterFactoryBean.setFilters(filters);
+
+        filterFactoryBean.setLoginUrl("/app/login");
 
         return filterFactoryBean;
     }

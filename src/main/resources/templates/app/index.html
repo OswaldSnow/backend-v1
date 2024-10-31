@@ -9,6 +9,6 @@
 <h2>Hi,this is index.html</h2>
 <h3 th:text="${currentUser.getName()}"></h3>
 <a th:href="@{/logout}">logout</a>
-<a th:href="@{/web/user/list}" shiro:hasPermission="user:list" >user list</a>
+<a th:href="@{/app/user/list}" shiro:hasPermission="user:list" >user list</a>
 </body>
 </html>
