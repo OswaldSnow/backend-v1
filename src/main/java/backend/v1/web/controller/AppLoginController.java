@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/app")
-public class LoginController {
+public class AppLoginController {
 
     @GetMapping("/login")
     public String login() {

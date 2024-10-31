@@ -18,7 +18,7 @@ import java.util.List;
 @Controller
 @RequestMapping("/app/user")
 @Slf4j
-public class UserController {
+public class AppUserController {
 
     private static final String PageList = "user/userList";
 

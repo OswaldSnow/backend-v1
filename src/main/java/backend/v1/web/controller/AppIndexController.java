@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 @RequestMapping("/app")
 @Slf4j
-public class IndexController {
+public class AppIndexController {
 
     private final String PageIndex = "index";
 

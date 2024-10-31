@@ -22,9 +22,15 @@ public class CustomShiroRealmForApi extends AuthorizingRealm {
 
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        // 处理 API 调用者的权限
+
+        // 从 principalCollection 中获取认证阶段存储的 principal
+        String tokenString = (String) principalCollection.getPrimaryPrincipal();
+
+        // 解析 token，获取用户角色和权限信息
         SimpleAuthorizationInfo authorizationInfo = new SimpleAuthorizationInfo();
-        // 设置角色和权限...
+        // authorizationInfo.addRole("admin");
+        // authorizationInfo.addStringPermission("user:view");
+
         return authorizationInfo;
     }
 
@@ -33,6 +39,7 @@ public class CustomShiroRealmForApi extends AuthorizingRealm {
         ApiAuthenticationToken apiToken = (ApiAuthenticationToken) authenticationToken;
         String tokenString = (String) apiToken.getCredentials();
 
+//        throw new AuthenticationException("测试认证token失败");
         // 验证 token
         // 可以是 JWT 验证、API key 验证等
 //        if (!validateToken(tokenString)) {
@@ -41,7 +48,7 @@ public class CustomShiroRealmForApi extends AuthorizingRealm {
 
         // 返回认证信息
         return new SimpleAuthenticationInfo(
-                tokenString, // principal
+                tokenString, // principal (后续可以通过 SecurityUtils.getSubject().getPrincipal() 获取)
                 tokenString, // credentials
                 getName()    // realmName
         );

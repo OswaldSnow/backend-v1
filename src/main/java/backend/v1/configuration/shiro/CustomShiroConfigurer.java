@@ -59,15 +59,17 @@ public class CustomShiroConfigurer {
         chainMap.put("/favicon.ico","anon");
         chainMap.put("/static/**", "anon");
         chainMap.put("/app/login", "anon");
-        chainMap.put("/api/token", "anon");
+        chainMap.put("/api/login", "anon");
 
+        // app/** 和 api/** 分别使用不同的过滤器
         chainMap.put("/app/**", "auth");
         chainMap.put("/api/**", "apiAuth");
 
+        // 默认 to be continued
         chainMap.put("/**", "auth");
 
-        log.info("=== Shiro Filter Chains ===");
-        chainMap.forEach((k, v) -> log.info("Path: {}, Filter: {}", k, v));
+//        log.info("=== Shiro Filter Chains ===");
+//        chainMap.forEach((k, v) -> log.info("Path: {}, Filter: {}", k, v));
 
         filterFactoryBean.setFilterChainDefinitionMap(chainMap);
 

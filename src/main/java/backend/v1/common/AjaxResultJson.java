@@ -1,46 +1,134 @@
 package backend.v1.common;
 
+import lombok.Getter;
 import java.util.LinkedHashMap;
 
 /**
- * 统一 ajax 返回 json 格式
+ * 统一的 API 响应结果封装类
+ * @author yourname
  */
 public class AjaxResultJson extends LinkedHashMap<String, Object> {
 
     private static final long serialVersionUID = 1L;
 
-    public static final String CODE_TAG = "code";
+    // 使用不可变的常量类来存储键名
+    public static final class ResultFields {
+        public static final String CODE = "code";
+        public static final String MESSAGE = "message";
+        public static final String DATA = "data";
+        public static final String PAGE_INFO = "pageInfo";
 
-    public static final String MSG_TAG = "message";
-
-    public static final String DATA_TAG = "data";
-
-    public static final String PAGE_TAG = "pageInfo";
-
-    public AjaxResultJson() {}
-
-    public AjaxResultJson(int code, String msg) {
-        this.put(CODE_TAG, code);
-        this.put(MSG_TAG, msg);
+        private ResultFields() {} // 防止实例化
     }
 
-    public AjaxResultJson(int code, String msg, Object data) {
-        this.put(CODE_TAG, code);
-        this.put(MSG_TAG, msg);
-        if (data != null) {
-            this.put(DATA_TAG, data);
+    @Getter
+    public enum ResponseCode {
+        SUCCESS(2000, "成功"),
+        WARN(3001, "警告"),
+        ERROR(5000, "错误"),
+        UNAUTHORIZED(4001, "未授权"),
+        FORBIDDEN(4003, "禁止访问"),
+        NOT_FOUND(4004, "资源不存在"),
+        INTERNAL_ERROR(5001, "服务器内部错误");
+
+        private final int code;
+        private final String message;
+
+        ResponseCode(int code, String message) {
+            this.code = code;
+            this.message = message;
         }
     }
 
-    public AjaxResultJson(int code, String msg,Object data, PaginationInfo pageInfo) {
-        this.put(CODE_TAG, code);
-        this.put(MSG_TAG, msg);
-        if (data != null) {
-            this.put(DATA_TAG, data);
+    private AjaxResultJson() {
+        super(4); // 指定初始容量
+    }
+
+    public static AjaxResultJsonBuilder builder() {
+        return new AjaxResultJsonBuilder();
+    }
+
+    // Builder 模式构建响应
+    public static class AjaxResultJsonBuilder {
+        private final AjaxResultJson result;
+
+        private AjaxResultJsonBuilder() {
+            result = new AjaxResultJson();
         }
-        if (pageInfo != null) {
-            this.put(PAGE_TAG, pageInfo);
+
+        public AjaxResultJsonBuilder code(ResponseCode responseCode) {
+            result.put(ResultFields.CODE, responseCode.getCode());
+            return this;
         }
+
+        public AjaxResultJsonBuilder message(String message) {
+            result.put(ResultFields.MESSAGE, message);
+            return this;
+        }
+
+        public AjaxResultJsonBuilder data(Object data) {
+            if (data != null) {
+                result.put(ResultFields.DATA, data);
+            }
+            return this;
+        }
+
+        public AjaxResultJsonBuilder pageInfo(PaginationInfo pageInfo) {
+            if (pageInfo != null) {
+                result.put(ResultFields.PAGE_INFO, pageInfo);
+            }
+            return this;
+        }
+
+        public AjaxResultJson build() {
+            return result;
+        }
+    }
+
+    // 快捷方法
+    public static AjaxResultJson success() {
+        return builder()
+                .code(ResponseCode.SUCCESS)
+                .message(ResponseCode.SUCCESS.getMessage())
+                .build();
+    }
+
+    public static AjaxResultJson success(Object data) {
+        return builder()
+                .code(ResponseCode.SUCCESS)
+                .message(ResponseCode.SUCCESS.getMessage())
+                .data(data)
+                .build();
+    }
+
+    public static AjaxResultJson success(Object data, PaginationInfo pageInfo) {
+        return builder()
+                .code(ResponseCode.SUCCESS)
+                .message(ResponseCode.SUCCESS.getMessage())
+                .data(data)
+                .pageInfo(pageInfo)
+                .build();
+    }
+
+    public static AjaxResultJson error(String message) {
+        return builder()
+                .code(ResponseCode.ERROR)
+                .message(message)
+                .build();
+    }
+
+    public static AjaxResultJson error(ResponseCode responseCode, String message) {
+        return builder()
+                .code(responseCode)
+                .message(message)
+                .build();
+    }
+
+    public static AjaxResultJson warn(String message) {
+        return builder()
+                .code(ResponseCode.WARN)
+                .message(message)
+                .build();
     }
 
     @Override
@@ -48,131 +136,4 @@ public class AjaxResultJson extends LinkedHashMap<String, Object> {
         super.put(key, value);
         return this;
     }
-
-    public enum ResponseCode {
-        SUCCESS(2000),
-        WORN(3001),
-        ERROR(5000)
-        ;
-
-        ResponseCode(int code){
-            this.code = code;
-        }
-
-        private final int code;
-
-        public int getCode() {
-            return code;
-        }
-    }
-
-    public enum ResponseMessage{
-        SUCCESS_MSG("成功"),
-        WORN_MSG("警告"),
-        ERROR_MSG("错误")
-        ;
-
-        private final String message;
-
-        ResponseMessage(String message){
-            this.message = message;
-        }
-        public String getMessage(){
-            return message;
-        }
-    }
-
-    /**
-     * 成功相关
-     * @param msg
-     * @param data
-     * @param pageInfo
-     * @return
-     */
-    public static AjaxResultJson success(String msg, Object data, PaginationInfo pageInfo) {
-        return new AjaxResultJson(ResponseCode.SUCCESS.getCode(), msg, data, pageInfo);
-    }
-
-    public static AjaxResultJson success(String msg, Object data) {
-        return new AjaxResultJson(ResponseCode.SUCCESS.getCode(), msg, data);
-    }
-
-    public static AjaxResultJson success(Object data, PaginationInfo pageInfo) {
-        return new AjaxResultJson(ResponseCode.SUCCESS.getCode(), ResponseMessage.SUCCESS_MSG.getMessage(), data, pageInfo);
-    }
-
-    public static AjaxResultJson success(Object data) {
-        return new AjaxResultJson(ResponseCode.SUCCESS.getCode(), ResponseMessage.SUCCESS_MSG.getMessage(), data);
-    }
-
-    public static AjaxResultJson success(String msg) {
-        return new AjaxResultJson(ResponseCode.SUCCESS.getCode(), msg);
-    }
-
-    public static AjaxResultJson success() {
-        return new AjaxResultJson(ResponseCode.SUCCESS.getCode(), ResponseMessage.SUCCESS_MSG.getMessage());
-    }
-
-    /**
-     * 错误相关
-     * @param msg
-     * @param data
-     * @param pageInfo
-     * @return
-     */
-    public static AjaxResultJson error(String msg, Object data, PaginationInfo pageInfo) {
-        return new AjaxResultJson(ResponseCode.ERROR.getCode(), msg, data, pageInfo);
-    }
-
-    public static AjaxResultJson error(String msg, Object data) {
-        return new AjaxResultJson(ResponseCode.ERROR.getCode(), msg, data);
-    }
-
-    public static AjaxResultJson error(Object data, PaginationInfo pageInfo) {
-        return new AjaxResultJson(ResponseCode.ERROR.getCode(), ResponseMessage.ERROR_MSG.getMessage(), data, pageInfo);
-    }
-
-    public static AjaxResultJson error(Object data) {
-        return new AjaxResultJson(ResponseCode.ERROR.getCode(), ResponseMessage.ERROR_MSG.getMessage(), data);
-    }
-
-    public static AjaxResultJson error(String msg) {
-        return new AjaxResultJson(ResponseCode.ERROR.getCode(), msg);
-    }
-
-    public static AjaxResultJson error() {
-        return new AjaxResultJson(ResponseCode.ERROR.getCode(), ResponseMessage.ERROR_MSG.getMessage());
-    }
-
-    /**
-     * 警告相关
-     * @param msg
-     * @param data
-     * @param pageInfo
-     * @return
-     */
-    public static AjaxResultJson worn(String msg, Object data, PaginationInfo pageInfo) {
-        return new AjaxResultJson(ResponseCode.WORN.getCode(), msg, data, pageInfo);
-    }
-
-    public static AjaxResultJson worn(String msg, Object data) {
-        return new AjaxResultJson(ResponseCode.WORN.getCode(), msg, data);
-    }
-
-    public static AjaxResultJson worn(Object data, PaginationInfo pageInfo) {
-        return new AjaxResultJson(ResponseCode.WORN.getCode(), ResponseMessage.WORN_MSG.getMessage(), data, pageInfo);
-    }
-
-    public static AjaxResultJson worn(Object data) {
-        return new AjaxResultJson(ResponseCode.WORN.getCode(), ResponseMessage.WORN_MSG.getMessage(), data);
-    }
-
-    public static AjaxResultJson worn(String msg) {
-        return new AjaxResultJson(ResponseCode.WORN.getCode(), msg);
-    }
-
-    public static AjaxResultJson worn() {
-        return new AjaxResultJson(ResponseCode.WORN.getCode(), ResponseMessage.WORN_MSG.getMessage());
-    }
-
 }

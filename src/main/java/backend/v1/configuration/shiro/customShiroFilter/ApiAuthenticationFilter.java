@@ -19,19 +19,8 @@ public class ApiAuthenticationFilter extends AuthenticatingFilter {
 
     @Override
     protected boolean isAccessAllowed(ServletRequest request, ServletResponse response, Object mappedValue) {
-        // 如果已经认证过，返回true
-        return SecurityUtils.getSubject().isAuthenticated();
-    }
-
-    @Override
-    protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {
-        HttpServletRequest httpRequest = (HttpServletRequest) request;
-        // 从请求头或参数中获取 token
-        String token = httpRequest.getHeader("Authorization");
-        if (StringUtils.isEmpty(token)) {
-            return null;
-        }
-        return new ApiAuthenticationToken(token); // 自定义的 Token 对象
+        // 对于无状态API请求，让它每次都进入认证流程
+        return false;
     }
 
     @Override
@@ -41,16 +30,27 @@ public class ApiAuthenticationFilter extends AuthenticatingFilter {
             return executeLogin(request, response);
         } catch (Exception e) {
             ResponseUtil.writeJson((HttpServletResponse) response,
-                    AjaxResultJson.error("认证失败"));
+                    AjaxResultJson.error(e.getMessage()));
             return false;
         }
+    }
+
+    @Override
+    protected AuthenticationToken createToken(ServletRequest request, ServletResponse response) throws Exception {
+        HttpServletRequest httpRequest = (HttpServletRequest) request;
+        // 从请求头或参数中获取 token
+        String token = httpRequest.getHeader("Authorization");
+        if (StringUtils.isEmpty(token)) {
+            throw new AuthenticationException("token is empty");
+        }
+        return new ApiAuthenticationToken(token); // 自定义的 Token 对象
     }
 
     @Override
     protected boolean onLoginFailure(AuthenticationToken token, AuthenticationException e,
                                      ServletRequest request, ServletResponse response) {
 
-        ResponseUtil.writeJson((HttpServletResponse) response, AjaxResultJson.error("token 认证失败"));
+        ResponseUtil.writeJson((HttpServletResponse) response, AjaxResultJson.error(e.getMessage()));
         return false;
     }
 }
