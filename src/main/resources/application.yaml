@@ -36,11 +36,11 @@ logging:
   level:
     backend.v1: info
 
-rsa:
-  private-key-path: "${user.home}/backend/private_key.pem"
-  public-key-path: "${user.home}/backend/public_key.pem"
-
-jwt:
-  secret: "your-256-bit-secret-key-base64-encoded"
-  expiration: 86400000      # 24小时
-  refresh-expiration: 604800000  # 7天
+#rsa:
+#  private-key-path: "${user.home}/backend/private_key.pem"
+#  public-key-path: "${user.home}/backend/public_key.pem"
+#
+#jwt:
+#  secret: "your-256-bit-secret-key-base64-encoded"
+#  expiration: 86400000      # 24小时
+#  refresh-expiration: 604800000  # 7天
