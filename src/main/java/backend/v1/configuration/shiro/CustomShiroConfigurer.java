@@ -51,8 +51,19 @@ public class CustomShiroConfigurer {
     public ShiroFilterFactoryBean shiroFilterFactoryBean(DefaultWebSecurityManager defaultWebSecurityManager) {
 
         ShiroFilterFactoryBean filterFactoryBean = new ShiroFilterFactoryBean();
+
         filterFactoryBean.setSecurityManager(defaultWebSecurityManager);
 
+        filterFactoryBean.setFilterChainDefinitionMap(getStringStringMap());
+
+        filterFactoryBean.setFilters(getStringFilterMap());
+
+        filterFactoryBean.setLoginUrl("/app/login");
+
+        return filterFactoryBean;
+    }
+
+     public Map<String, String> getStringStringMap() {
         Map<String,String> chainMap = new LinkedHashMap<>();
         chainMap.put("/logout", "logout");
 
@@ -60,27 +71,22 @@ public class CustomShiroConfigurer {
         chainMap.put("/static/**", "anon");
         chainMap.put("/app/login", "anon");
         chainMap.put("/api/login", "anon");
+        chainMap.put("/api/publicKey", "anon");
 
         // app/** 和 api/** 分别使用不同的过滤器
         chainMap.put("/app/**", "auth");
         chainMap.put("/api/**", "apiAuth");
 
-        // 默认 to be continued
+        // 默认
         chainMap.put("/**", "auth");
+        return chainMap;
+    }
 
-//        log.info("=== Shiro Filter Chains ===");
-//        chainMap.forEach((k, v) -> log.info("Path: {}, Filter: {}", k, v));
-
-        filterFactoryBean.setFilterChainDefinitionMap(chainMap);
-
+    public Map<String, Filter> getStringFilterMap() {
         Map<String, Filter> filters = new LinkedHashMap<>();
         filters.put("auth", new CoverFormAuthenticationFilterForApp());
         filters.put("apiAuth", new ApiAuthenticationFilter());
-        filterFactoryBean.setFilters(filters);
-
-        filterFactoryBean.setLoginUrl("/app/login");
-
-        return filterFactoryBean;
+        return filters;
     }
 
 }

@@ -5,7 +5,6 @@ import java.util.LinkedHashMap;
 
 /**
  * 统一的 API 响应结果封装类
- * @author yourname
  */
 public class AjaxResultJson extends LinkedHashMap<String, Object> {
 
